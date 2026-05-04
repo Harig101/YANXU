@@ -1110,8 +1110,8 @@
       },
       {
         id: 'folder-6',
-        name: 'карта',
-        nameEn: 'MAP',
+        name: '湮墟地图',
+        nameEn: 'YANXU MAP',
         path: 'map',
         items: [
           { file: 'map/第一层核心穹顶区.png', displayName: '【第一層】CORE LAYER穹頂區', narrative: '核心層的天空是人造的。\n十二個人造太陽永遠停留在鈉黃昏的光譜裡，模拟著一種從未存在過的「自然」。\n這裡的空氣是免費的，呼吸是居民的權利而非特權。\n但這一切免費，都是建立在邊緣層的呼吸牌稅之上的。\n\n<i>[CORE LAYER]\nThe sky here is artificial.\nTwelve artificial suns permanently stay in the sodium-dusk spectrum, simulating a "nature" that never existed.\nAir here is free — breathing is a resident\'s right, not a privilege.\nBut all this freeness is built on the breath-token taxes of the Edge Layer.</i>' },
@@ -1180,7 +1180,7 @@
       const visibleFolders = ARCHIVE_DATA.filter(folder => !folder.hidden || (folder.hidden && hiddenFolderUnlocked));
       grid.innerHTML = visibleFolders.map(folder => `
         <div class="folder-card ${folder.hidden ? 'hidden-folder' : ''}" onclick="openFolder('${folder.id}')">
-          <div class="folder-icon">${folder.id === 'folder-6' && hiddenFolderUnlocked ? '🗺️' : (folder.hidden && hiddenFolderUnlocked ? '🔓' : '📁')}</div>
+          <div class="folder-icon">${folder.id === 'folder-6' ? '🗺️' : (folder.id === 'folder-7' ? '🌐' : (folder.hidden && hiddenFolderUnlocked ? '🔓' : '📁'))}</div>
           <div class="folder-name">${folder.name}</div>
           <div class="folder-name-en">${folder.nameEn || ''}</div>
           <div class="folder-meta">${folder.items.length} IMAGES</div>
@@ -1216,8 +1216,8 @@
       backBtn.classList.add('active');
 
       imageGrid.innerHTML = folder.items.map((item, index) => {
-        const hasChapter = item.hasChapter ? '<button class="action-btn" onclick="event.stopPropagation(); openChapter(\'' + folderId + '\', ' + index + ')">閱讀章節</button>' : '';
-        const showNarrative = !item.hasChapter ? '<button class="action-btn" onclick="event.stopPropagation(); openViewer(\'' + folderId + '\', ' + index + ')">查看叙事</button>' : '';
+        const hasChapter = item.hasChapter ? '<button class="action-btn" onclick="event.stopPropagation(); openChapter(\'' + folderId + '\', ' + index + ')">Read Chapter-閱讀章節</button>' : '';
+        const showNarrative = !item.hasChapter ? '<button class="action-btn" onclick="event.stopPropagation(); openViewer(\'' + folderId + '\', ' + index + ')">VIEW-查看叙事</button>' : '';
         return `
         <div class="image-card" onclick="openViewer('${folderId}', ${index})">
           <img src="assets/${item.file}" alt="${item.displayName || item.file}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%23333%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23666%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22>NO IMAGE</text></svg>'">

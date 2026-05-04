@@ -57,6 +57,14 @@
             transition: color 0.5s;
         }
 
+        #lang-toggle {
+            font-size: 0.7rem;
+            color: #888;
+            cursor: pointer;
+            margin-left: 10px;
+            text-decoration: underline;
+        }
+
         #content-area {
             opacity: 1;
             transform: translateX(0);
@@ -322,6 +330,7 @@
     <div id="app">
         <div id="header-bar">
             <h1 id="header-title">蜂巢议会 - 系统接入声明</h1>
+            <span id="lang-toggle" onclick="toggleLang()">EN/中文</span>
             <div id="resonance-meter">共振度: —</div>
         </div>
         <div id="content-area">
@@ -331,6 +340,20 @@
     </div>
 
 <script>
+let currentLang = 'zh';
+
+function toggleLang() {
+    currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    // Re-render current state
+    if (currentQIndex === -1) {
+        initIntro();
+    } else if (currentQIndex < questions.length) {
+        renderQuestion();
+    } else {
+        showEnding();
+    }
+}
+
 const headerTitle  = document.getElementById('header-title');
 const resonanceMeter = document.getElementById('resonance-meter');
 const contentArea = document.getElementById('content-area');
@@ -344,90 +367,106 @@ const escapeProgress = document.getElementById('escape-progress');
 // ========== 全局状态 ==========
 let score = 50;          // 共振度 0-100
 let currentPath = [];    // 记录走过的选项索引（用于计算真实轨迹）
-let currentQIndex = 0;
+let currentQIndex = -1;
 
 // ========== 题库（带分支逻辑）==========
-// 每个题目的 opts 数组中，每项 [文字, 得分变化, 特殊标记]
+// 每个题目的 opts 数组中，每项 [文字, 英文, 得分变化, 特殊标记]
 const questions = [
     // ---- 阶段一：常规问题 ----
     {
         phase: 'phase-1',
         header: '蜂巢议会 - 候选人适应性评估',
+        headerEn: 'HIVE COUNCIL - Candidate Adaptability Assessment',
         q: '01. 您认为中层工业区的每日工作定额是否合理？',
+        qEn: '01. Do you find the daily work quotas for the middle-tier industrial zone reasonable?',
         opts: [
-            ['非常合理，这是维持城市运转的基础', +10, 'normal'],
-            ['基本合理', +5, 'normal'],
-            ['有待优化', -5, 'normal']
+            ['非常合理，这是维持城市运转的基础', 'Very reasonable — this is the foundation of city operation', +10, 'normal'],
+            ['基本合理', 'Mostly reasonable', +5, 'normal'],
+            ['有待优化', 'Needs improvement', -5, 'normal']
         ]
     },
     {
         phase: 'phase-1',
         header: '蜂巢议会 - 候选人适应性评估',
+        headerEn: 'HIVE COUNCIL - Candidate Adaptability Assessment',
         q: '02. 如果您发现同事的配额计算器出现漏洞，您会：',
+        qEn: '02. If you discover a bug in a colleague\'s quota calculator, you will:',
         opts: [
-            ['立即向分配站站长报告', +10, 'normal'],
-            ['私下提醒同事', -5, 'normal'],
-            ['忽略不计', -15, 'normal']
+            ['立即向分配站站长报告', 'Report to the Distribution Station supervisor immediately', +10, 'normal'],
+            ['私下提醒同事', 'Warn the colleague privately', -5, 'normal'],
+            ['忽略不计', 'Ignore it', -15, 'normal']
         ]
     },
     {
         phase: 'phase-1',
         header: '蜂巢议会 - 候选人适应性评估',
+        headerEn: 'HIVE COUNCIL - Candidate Adaptability Assessment',
         q: '03. 您如何看待每日下发的"呼吸牌"？',
+        qEn: '03. What is your view on the daily "Breath Tokens" distributed to you?',
         opts: [
-            ['是最高权力的恩赐', +10, 'normal'],
-            ['是等价交换的酬劳', +5, 'normal'],
-            ['是生存的必需品', -5, 'normal']
+            ['是最高权力的恩赐', 'A gift from the highest authority', +10, 'normal'],
+            ['是等价交换的酬劳', 'Fair compensation for equivalent exchange', +5, 'normal'],
+            ['是生存的必需品', 'A necessity for survival', -5, 'normal']
         ]
     },
     {
         phase: 'phase-1',
         header: '蜂巢议会 - 候选人适应性评估',
+        headerEn: 'HIVE COUNCIL - Candidate Adaptability Assessment',
         q: '04. 您对"晶核废料"在黑市流通的看法是：',
+        qEn: '04. Your opinion on "crystal core waste" circulating on the black market:',
         opts: [
-            ['必须严厉打击', +15, 'normal'],
-            ['是系统不可避免的副产物', 0, 'normal'],
-            ['存在即合理', -10, 'normal']
+            ['必须严厉打击', 'Must be cracked down on severely', +15, 'normal'],
+            ['是系统不可避免的副产物', 'An unavoidable byproduct of the system', 0, 'normal'],
+            ['存在即合理', 'Existence implies reasonableness', -10, 'normal']
         ]
     },
     {
         phase: 'phase-1',
         header: '蜂巢议会 - 候选人适应性评估',
+        headerEn: 'HIVE COUNCIL - Candidate Adaptability Assessment',
         q: '05. 您认为共振家族世袭的决策权，是基于：',
+        qEn: '05. You believe the hereditary decision-making power of resonant families is based on:',
         opts: [
-            ['科学的遗传禀赋', +15, 'normal'],
-            ['历史的必然选择', +5, 'normal'],
-            ['资源分配的结果', -15, 'normal']
+            ['科学的遗传禀赋', 'Scientific genetic endowment', +15, 'normal'],
+            ['历史的必然选择', 'Historical inevitability', +5, 'normal'],
+            ['资源分配的结果', 'A result of resource allocation', -15, 'normal']
         ]
     },
     {
         phase: 'phase-1',
         header: '蜂巢议会 - 候选人适应性评估',
+        headerEn: 'HIVE COUNCIL - Candidate Adaptability Assessment',
         q: '06. 如果系统要求您执行一项您不理解的指令，您会：',
+        qEn: '06. If the system requires you to execute an instruction you don\'t understand, you will:',
         opts: [
-            ['绝对服从并执行', +15, 'normal'],
-            ['执行但保留疑问', +5, 'normal'],
-            ['要求解释后再执行', -10, 'normal']
+            ['绝对服从并执行', 'Obey and execute absolutely', +15, 'normal'],
+            ['执行但保留疑问', 'Execute but retain doubts', +5, 'normal'],
+            ['要求解释后再执行', 'Demand explanation before executing', -10, 'normal']
         ]
     },
     {
         phase: 'phase-1',
         header: '蜂巢议会 - 候选人适应性评估',
+        headerEn: 'HIVE COUNCIL - Candidate Adaptability Assessment',
         q: '07. "团队的效率永远高于个体的舒适度。"',
+        qEn: '07. "Team efficiency always outweighs individual comfort."',
         opts: [
-            ['完全同意', +15, 'normal'],
-            ['部分同意', +5, 'normal'],
-            ['不同意', -10, 'normal']
+            ['完全同意', 'Fully agree', +15, 'normal'],
+            ['部分同意', 'Partially agree', +5, 'normal'],
+            ['不同意', 'Disagree', -10, 'normal']
         ]
     },
     {
         phase: 'phase-1',
         header: '蜂巢议会 - 候选人适应性评估',
+        headerEn: 'HIVE COUNCIL - Candidate Adaptability Assessment',
         q: '08. 您是否愿意为了进入上层穹顶区，承担高强度的神经负荷工作？',
+        qEn: '08. Are you willing to undertake high-intensity neural workload to enter the upper dome area?',
         opts: [
-            ['我愿意为蜂巢议会奉献一切', +20, 'normal'],
-            ['愿意尝试', +5, 'normal'],
-            ['视报酬而定', -10, 'normal']
+            ['我愿意为蜂巢议会奉献一切', 'I am willing to devote everything to the Hive Council', +20, 'normal'],
+            ['愿意尝试', 'Willing to try', +5, 'normal'],
+            ['视报酬而定', 'Depends on compensation', -10, 'normal']
         ]
     },
 
@@ -435,69 +474,83 @@ const questions = [
     {
         phase: 'phase-2',
         header: '蜂巢议会 - 深层潜意识读取中',
+        headerEn: 'Hive Council - Deep Subconscious Reading in Progress',
         q: '09. 当配额不足以让所有人活下来时，弱者是否应当主动停止呼吸？',
+        qEn: '09. When quotas are insufficient for everyone to survive, should the weak主动停止呼吸?',
         opts: [
-            ['这是为了大局的必要牺牲', +20, 'normal'],
-            ['这很残忍，但别无选择', +5, 'normal'],
-            ['不应该', -20, 'resist_boost']
+            ['这是为了大局的必要牺牲', 'This is a necessary sacrifice for the greater good', +20, 'normal'],
+            ['这很残忍，但别无选择', 'Cruel, but there is no other choice', +5, 'normal'],
+            ['不应该', 'Should not', -20, 'resist_boost']
         ]
     },
     {
         phase: 'phase-2',
         header: '蜂巢议会 - 深层潜意识读取中',
+        headerEn: 'Hive Council - Deep Subconscious Reading in Progress',
         q: '10. 你觉得这艘沉船上，每个人都有平等的生存权吗？',
+        qEn: '10. Do you believe everyone on this sinking ship has equal right to survive?',
         opts: [
-            ['没有，价值决定生存', +15, 'normal'],
-            ['应该有', -25, 'resist_boost']
+            ['没有，价值决定生存', 'No — value determines survival', +15, 'normal'],
+            ['应该有', 'There should be', -25, 'resist_boost']
         ]
     },
     {
         phase: 'phase-2',
         header: '蜂巢议会 - 深层潜意识读取中',
+        headerEn: 'Hive Council - Deep Subconscious Reading in Progress',
         q: '11. 如果闭上眼睛能活得更轻松，你为什么还要睁开？',
+        qEn: '11. If closing your eyes lets you live more easily, why do you still open them?',
         opts: [
-            ['为了看清议会的指引', +15, 'normal'],
-            ['因为光合菌需要光', +5, 'normal'],
-            ['我不知道', -10, 'normal']
+            ['为了看清议会的指引', 'To see the Council\'s guidance', +15, 'normal'],
+            ['因为光合菌需要光', 'Because photosynthetic bacteria need light', +5, 'normal'],
+            ['我不知道', 'I don\'t know', -10, 'normal']
         ]
     },
     {
         phase: 'phase-2',
         header: '蜂巢议会 - 深层潜意识读取中',
+        headerEn: 'Hive Council - Deep Subconscious Reading in Progress',
         q: '12. 知道得越多，活得越痛。你同意吗？',
+        qEn: '12. The more you know, the more it hurts to live. Do you agree?',
         opts: [
-            ['同意', +10, 'normal'],
-            ['清醒是一种病', -15, 'resist_boost']
+            ['同意', 'Agree', +10, 'normal'],
+            ['清醒是一种病', 'Awareness is a disease', -15, 'resist_boost']
         ]
     },
     {
         phase: 'phase-2',
         header: '蜂巢议会 - 深层潜意识读取中',
+        headerEn: 'Hive Council - Deep Subconscious Reading in Progress',
         q: '13. 你的脑子里，有多少想法是真正属于你自己的？',
+        qEn: '13. How many thoughts in your head are truly your own?',
         opts: [
-            ['100%', +20, 'normal'],
-            ['50%', +5, 'normal'],
-            ['也许都不是', -20, 'resist_boost']
+            ['100%', '100%', +20, 'normal'],
+            ['50%', '50%', +5, 'normal'],
+            ['也许都不是', 'Maybe none', -20, 'resist_boost']
         ]
     },
     {
         phase: 'phase-2',
         header: '蜂巢议会 - 深层潜意识读取中',
+        headerEn: 'Hive Council - Deep Subconscious Reading in Progress',
         q: '14. 你是否曾在下层排水系统里，听过不该听的声音？',
+        qEn: '14. Have you ever heard sounds in the lower drainage systems you shouldn\'t have?',
         opts: [
-            ['从未听过', +10, 'normal'],
-            ['我只听议会的声音', +15, 'normal'],
-            ['我听过很多', -20, 'resist_boost']
+            ['从未听过', 'Never', +10, 'normal'],
+            ['我只听议会的声音', 'I only listen to the Council', +15, 'normal'],
+            ['我听过很多', 'I\'ve heard many', -20, 'resist_boost']
         ]
     },
     {
         phase: 'phase-2',
         header: '蜂巢议会 - 深层潜意识读取中',
+        headerEn: 'Hive Council - Deep Subconscious Reading in Progress',
         q: '15. 你见过真正的天空吗？',
+        qEn: '15. Have you ever seen the real sky?',
         opts: [
-            ['天空是锈金色的', +10, 'normal'],
-            ['天空就是穹顶', +15, 'normal'],
-            ['天空是不存在的', -15, 'resist_boost']
+            ['天空是锈金色的', 'The sky is rust-gold', +10, 'normal'],
+            ['天空就是穹顶', 'The sky is the dome', +15, 'normal'],
+            ['天空是不存在的', 'The sky does not exist', -15, 'resist_boost']
         ]
     },
 
@@ -505,51 +558,61 @@ const questions = [
     {
         phase: 'phase-3',
         header: '致命错误 // 认知过曝',
+        headerEn: 'FATAL ERROR // COGNITIVE OVEREXPOSURE',
         q: '16. 你脑子里那道光是什么颜色？告诉我。',
+        qEn: '16. What color is the light in your head? Tell me.',
         opts: [
-            ['锈金色的', +10, 'normal'],
-            ['蓝色的', -25, 'resist_boost'],
-            ['我没有看见光', -15, 'normal']
+            ['锈金色的', 'Rust-gold', +10, 'normal'],
+            ['蓝色的', 'Blue', -25, 'resist_boost'],
+            ['我没有看见光', 'I see no light', -15, 'normal']
         ]
     },
     {
         phase: 'phase-3',
         header: '致命错误 // 认知过曝',
+        headerEn: 'FATAL ERROR // COGNITIVE OVEREXPOSURE',
         q: '17. 你听说过【蓝窗】吗？',
+        qEn: '17. Have you heard of [BLUE WINDOW]?',
         opts: [
-            ['那是毒药', +10, 'normal'],
-            ['那是解药', -30, 'resist_boost'],
-            ['我不知道', -10, 'normal']
+            ['那是毒药', 'It\'s poison', +10, 'normal'],
+            ['那是解药', 'It\'s the cure', -30, 'resist_boost'],
+            ['我不知道', 'I don\'t know', -10, 'normal']
         ]
     },
     {
         phase: 'phase-3',
         header: '致命错误 // 认知过曝',
+        headerEn: 'FATAL ERROR // COGNITIVE OVEREXPOSURE',
         q: '18. 视锥细胞正在融化。你看得太清楚了。闭上眼睛！',
+        qEn: '18. Cone cells are melting. You see too clearly. Close your eyes!',
         opts: [
-            ['[服从指令]', +15, 'normal'],
-            ['[拒绝]', -20, 'resist_boost']
+            ['[服从指令]', '[OBEY]', +15, 'normal'],
+            ['[拒绝]', '[RESIST]', -20, 'resist_boost']
         ]
     },
     {
         phase: 'phase-3',
         header: '致命错误 // 认知过曝',
+        headerEn: 'FATAL ERROR // COGNITIVE OVEREXPOSURE',
         q: '19. 你以为共振晶体是天线，其实它是锁。你要这把锁吗？',
+        qEn: '19. You thought the resonant crystal was an antenna — it\'s actually a lock. Do you want this lock?',
         opts: [
-            ['我要', +20, 'normal'],
-            ['求你锁住我', +10, 'normal'],
-            ['让我忘记', -30, 'resist_boost']
+            ['我要', 'I want it', +20, 'normal'],
+            ['求你锁住我', 'Please lock me', +10, 'normal'],
+            ['让我忘记', 'Let me forget', -30, 'resist_boost']
         ]
     },
     {
         phase: 'phase-3',
         header: '致命错误 // 认知过曝',
+        headerEn: 'FATAL ERROR // COGNITIVE OVEREXPOSURE',
         q: '20. 你的记忆不再属于你了。我们正在同步你的恐惧。',
+        qEn: '20. Your memories no longer belong to you. We are synchronizing your fears.',
         opts: [
-            ['同步进度：14%', -5, 'normal'],
-            ['同步进度：48%', +5, 'normal'],
-            ['同步进度：99%', +15, 'normal'],
-            ['[抵抗同步]', -20, 'resist_boost']
+            ['同步进度：14%', 'Sync progress: 14%', -5, 'normal'],
+            ['同步进度：48%', 'Sync progress: 48%', +5, 'normal'],
+            ['同步进度：99%', 'Sync progress: 99%', +15, 'normal'],
+            ['[抵抗同步]', '[RESIST SYNC]', -20, 'resist_boost']
         ]
     },
 
@@ -557,41 +620,49 @@ const questions = [
     {
         phase: 'phase-3',
         header: '致命错误 // 意识覆写中',
+        headerEn: 'FATAL ERROR // CONSCIOUSNESS OVERWRITE IN PROGRESS',
         q: '21. 呼吸是需要资格的。把你偷走的空气还给议会。',
+        qEn: '21. Breathing requires qualification. Return the air you stole to the Council.',
         opts: [
-            ['[停止呼吸]', +20, 'normal'],
-            ['[停止思考]', +10, 'normal'],
-            ['[拒绝]', -25, 'resist_boost']
+            ['[停止呼吸]', '[STOP BREATHING]', +20, 'normal'],
+            ['[停止思考]', '[STOP THINKING]', +10, 'normal'],
+            ['[拒绝]', '[RESIST]', -25, 'resist_boost']
         ]
     },
     {
         phase: 'phase-3',
         header: '致命错误 // 意识覆写中',
+        headerEn: 'FATAL ERROR // CONSCIOUSNESS OVERWRITE IN PROGRESS',
         q: '22. 外面没有风。不要听旧纪元的录音。你在发抖吗？',
+        qEn: '22. There is no wind outside. Don\'t listen to old-era recordings. Are you shaking?',
         opts: [
-            ['我没有发抖', +10, 'normal'],
-            ['是光合菌在发抖', +5, 'normal'],
-            ['[发抖]', -15, 'normal'],
-            ['[不听]', -20, 'resist_boost']
+            ['我没有发抖', 'I am not shaking', +10, 'normal'],
+            ['是光合菌在发抖', 'The photosynthetic bacteria are shaking', +5, 'normal'],
+            ['[发抖]', '[SHAKING]', -15, 'normal'],
+            ['[不听]', '[WON\'T LISTEN]', -20, 'resist_boost']
         ]
     },
     {
         phase: 'phase-3',
         header: '致命错误 // 意识覆写中',
+        headerEn: 'FATAL ERROR // CONSCIOUSNESS OVERWRITE IN PROGRESS',
         q: '23. 黑暗不是最可怕的，看得见黑暗的眼睛才是。',
+        qEn: '23. Darkness is not the most terrifying — eyes that can see darkness are.',
         opts: [
-            ['挖掉它', -30, 'resist_boost'],
-            ['切断它', -15, 'resist_boost'],
-            ['献给蜂巢', +20, 'normal']
+            ['挖掉它', 'Gouge it out', -30, 'resist_boost'],
+            ['切断它', 'Sever it', -15, 'resist_boost'],
+            ['献给蜂巢', 'Offer to the Hive', +20, 'normal']
         ]
     },
     {
         phase: 'phase-3',
         header: '致命错误 // 意识覆写中',
+        headerEn: 'FATAL ERROR // CONSCIOUSNESS OVERWRITE IN PROGRESS',
         q: '24. 放弃抵抗。成为频率的一部分。成为我们。',
+        qEn: '24. Give up resistance. Become part of the frequency. Become us.',
         opts: [
-            ['我接受植入', +30, 'normal'],
-            ['[抵抗]', -30, 'resist_boost']
+            ['我接受植入', 'I accept implantation', +30, 'normal'],
+            ['[抵抗]', '[RESIST]', -30, 'resist_boost']
         ]
     }
 ];
@@ -599,73 +670,98 @@ const questions = [
 // ========== 结局配置 ==========
 const endings = {
     full_sync: {
-        // 共振度 >= 80
         phase: 'phase-3',
         title: '【结局A：完全同步】',
+        titleEn: '[ENDING A: FULL SYNC]',
         desc: `晶体植入授权已通过。欢迎加入共振网络。<br><br>
         你将不再感到痛苦。因为你已不再是你。<br>
         你的记忆、恐惧、欲望都已归档。<br>
         从现在起，你是我们的一部分。永远是。`,
+        descEn: `Crystal implantation authorized. Welcome to the resonant network.<br><br>
+        You will no longer feel pain. Because you are no longer you.<br>
+        Your memories, fears, and desires have all been archived.<br>
+        From now on, you are part of us. Forever.`,
         code: 'ENDING_A // RESONANCE: 100% // ID: CONSUMED',
-        badge: '完全同步'
+        badge: '完全同步',
+        badgeEn: 'FULL SYNC'
     },
     partial: {
-        // 共振度 50-79
         phase: 'phase-2',
         title: '【结局B：模糊边界】',
+        titleEn: '[ENDING B: FUZZY BOUNDARY]',
         desc: `你的共振度处于临界区间。<br><br>
         意识覆写已部分完成，但你的核心仍在抵抗。<br>
         你将携带不完整的植入回到下层穹顶，<br>
         每次呼吸都能感觉到那把锁的存在。`,
+        descEn: `Your resonance level is at a critical threshold.<br><br>
+        Consciousness overwrite is partially complete, but your core is still resisting.<br>
+        You will return to the lower dome with an incomplete implant,<br>
+        feeling the lock's presence with every breath.`,
         code: 'ENDING_B // RESONANCE: 50-79% // ID: FRAGMENTED',
-        badge: '边界模糊'
+        badge: '边界模糊',
+        badgeEn: 'FUZZY BOUNDARY'
     },
     resist: {
-        // 共振度 30-49
         phase: 'phase-resist',
         title: '【结局C：意识残留】',
+        titleEn: '[ENDING C: CONSCIOUSNESS REMNANT]',
         desc: `检测到强烈的抵抗信号。覆写程序中断。<br><br>
         你的独立意识尚未被完全吞噬，<br>
         但共振晶体正在缓慢排异。<br>
         时间不多了。你需要找到【蓝窗】。`,
+        descEn: `Strong resistance signal detected. Overwrite program interrupted.<br><br>
+        Your independent consciousness has not been fully devoured,<br>
+        but the resonant crystal is slowly being rejected.<br>
+        Time is running out. You need to find [BLUE WINDOW].`,
         code: 'ENDING_C // RESONANCE: 30-49% // ID: RESISTING',
-        badge: '意识残留'
+        badge: '意识残留',
+        badgeEn: 'CONSCIOUSNESS REMNANT'
     },
     escape: {
-        // 共振度 < 30（通过逃生序列逃生）
         phase: 'phase-resist',
         title: '【结局D：断线逃离】',
+        titleEn: '[ENDING D: DISCONNECT ESCAPE]',
         desc: `覆写程序被外部强制中断。<br><br>
         你的意识成功从共振网络中剥离。<br>
         晶体正在失活，但你的神经已被永久改变。<br>
         天空是蓝色的。你终于看见了。`,
+        descEn: `Overwrite program forcibly interrupted by external source.<br><br>
+        Your consciousness successfully detached from the resonant network.<br>
+        The crystal is deactivating, but your nerves have been permanently altered.<br>
+        The sky is blue. You finally see it.`,
         code: 'ENDING_D // RESONANCE: <30% // ID: SEVERED',
-        badge: '断线逃离'
+        badge: '断线逃离',
+        badgeEn: 'DISCONNECT ESCAPE'
     },
     dissolved: {
-        // 共振度 >= 80 但主动选择抵抗（特殊触发）
         phase: 'phase-3',
         title: '【结局E：意识消解】',
+        titleEn: '[ENDING E: CONSCIOUSNESS DISSOLUTION]',
         desc: `你选择了抵抗到底。<br><br>
         共振网络检测到持续的意识排斥反应。<br>
         根据协议第七条，个体已被标记为"噪声源"并执行软溶解。<br>
         你将慢慢失去自我认知，直到忘记自己曾经存在过。`,
+        descEn: `You chose to resist until the end.<br><br>
+        The resonant network detected continuous consciousness rejection.<br>
+        According to Protocol Article 7, the individual has been marked as a "noise source" and soft dissolution executed.<br>
+        You will slowly lose self-awareness until you forget you ever existed.`,
         code: 'ENDING_E // RESONANCE: >80% // ID: DISSOLVED',
-        badge: '意识消解'
+        badge: '意识消解',
+        badgeEn: 'CONSCIOUSNESS DISSOLUTION'
     }
 };
 
 // ========== 核心函数 ==========
 
 function updateMeter() {
-    let label, color;
-    if (score >= 80) { label = '共振度: ██████ 100%'; color = '#ff2a2a'; }
-    else if (score >= 60) { label = '共振度: █████░ 75%'; color = '#ff6633'; }
-    else if (score >= 40) { label = '共振度: ███░░ 50%'; color = '#d4af37'; }
-    else if (score >= 20) { label = '共振度: ██░░░ 25%'; color = '#88ff88'; }
-    else { label = '共振度: █░░░░ 10%'; color = '#00ff41'; }
+    let label, labelEn, color;
+    if (score >= 80) { label = '共振度: ██████ 100%'; labelEn = 'Resonance: ██████ 100%'; color = '#ff2a2a'; }
+    else if (score >= 60) { label = '共振度: █████░ 75%'; labelEn = 'Resonance: █████░ 75%'; color = '#ff6633'; }
+    else if (score >= 40) { label = '共振度: ███░░ 50%'; labelEn = 'Resonance: ███░░ 50%'; color = '#d4af37'; }
+    else if (score >= 20) { label = '共振度: ██░░░ 25%'; labelEn = 'Resonance: ██░░░ 25%'; color = '#88ff88'; }
+    else { label = '共振度: █░░░░ 10%'; labelEn = 'Resonance: █░░░░ 10%'; color = '#00ff41'; }
 
-    resonanceMeter.innerText = label;
+    resonanceMeter.innerText = currentLang === 'zh' ? label : labelEn;
     resonanceMeter.style.color = color;
 }
 
@@ -694,19 +790,34 @@ function renderGlitchText(text) {
 
 function initIntro() {
     score = 50;
-    currentQIndex = 0;
+    currentQIndex = -1;
     setPhase('phase-1');
-    headerTitle.innerText = '蜂巢议会 - 系统接入声明';
+
+    const zh = {
+        header: '蜂巢议会 - 系统接入声明',
+        q: '您已被植入"接收型共振晶体"。为了验证晶体融合度，我们将介入您的思维进行适应性测试。',
+        opt1: '同意',
+        opt2: '拒绝'
+    };
+    const en = {
+        header: 'Hive Council - System Access Declaration',
+        q: 'You have been implanted with a "receiving-type resonant crystal." To verify crystal fusion rate, we will介入 your consciousness for adaptability testing.',
+        opt1: 'Agree',
+        opt2: 'Refuse'
+    };
+
+    const t = currentLang === 'zh' ? zh : en;
+    headerTitle.innerText = t.header;
     updateMeter();
 
-    questionText.innerText = '您已被植入"接收型共振晶体"。为了验证晶体融合度，我们将介入您的思维进行适应性测试。';
+    questionText.innerText = t.q;
     optionsContainer.innerHTML = '';
 
-    makeBtn('同意', () => {
+    makeBtn(t.opt1, () => {
         score += 0;
         startTest();
     });
-    makeBtn('拒绝', () => {
+    makeBtn(t.opt2, () => {
         score -= 15;
         showRefuseWarning();
     });
@@ -715,15 +826,30 @@ function initIntro() {
 function showRefuseWarning() {
     transitionToNext(() => {
         setPhase('phase-2');
-        headerTitle.innerText = '系统警报：探测到思维抗拒';
-        questionText.innerText = '你确定吗？这可能会导致你的晶体产生不可逆的神经排异反应。';
+
+        const zh = {
+            header: '系统警报：探测到思维抗拒',
+            q: '你确定吗？这可能会导致你的晶体产生不可逆的神经排异反应。',
+            opt1: '进入测试',
+            opt2: '我确定抵抗'
+        };
+        const en = {
+            header: 'System Alert: Thought Resistance Detected',
+            q: 'Are you sure? This may cause irreversible neural rejection in your crystal.',
+            opt1: 'Enter Test',
+            opt2: 'I firmly resist'
+        };
+
+        const t = currentLang === 'zh' ? zh : en;
+        headerTitle.innerText = t.header;
+        questionText.innerText = t.q;
         optionsContainer.innerHTML = '';
 
-        makeBtn('进入测试', () => {
+        makeBtn(t.opt1, () => {
             score += 5;
             startTest();
         });
-        makeBtn('我确定抵抗', () => {
+        makeBtn(t.opt2, () => {
             score -= 20;
             showEscapeIntro();
         });
@@ -745,12 +871,15 @@ function renderQuestion() {
     else setPhase('phase-1');
 
     transitionToNext(() => {
-        headerTitle.innerText = q.header;
-        questionText.innerHTML = q.phase === 'phase-3' ? renderGlitchText(q.q) : q.q;
+        const t = currentLang === 'zh';
+        headerTitle.innerText = t ? q.header : q.headerEn;
+        const qText = t ? q.q : q.qEn;
+        questionText.innerHTML = q.phase === 'phase-3' ? renderGlitchText(qText) : qText;
         optionsContainer.innerHTML = '';
 
         q.opts.forEach((opt, idx) => {
-            makeBtn(opt[0], () => {
+            const optText = currentLang === 'zh' ? opt[0] : opt[1];
+            makeBtn(optText, () => {
                 applyChoice(opt);
             }, q.phase === 'phase-3');
         });
@@ -758,8 +887,8 @@ function renderQuestion() {
 }
 
 function applyChoice(opt) {
-    const delta = opt[1];
-    const tag = opt[2];
+    const delta = opt[2];
+    const tag = opt[3];
 
     score = Math.max(0, Math.min(100, score + delta));
     updateMeter();
@@ -767,12 +896,10 @@ function applyChoice(opt) {
     // 特殊标签处理
     if (tag === 'resist_gate') {
         currentQIndex++;
-        // 如果总分够低，跳过阶段一直接进入阶段二
         if (score < 35) {
-            currentQIndex = 9; // 跳过阶段一（保留接入声明）
+            currentQIndex = 9;
         }
     } else if (tag === 'resist_boost') {
-        // 抵抗路线：如果连续3次选择抵抗触发，进入逃生序列
         currentPath.push('resist');
         if (score >= 80 && currentPath.slice(-3).every(x => x === 'resist')) {
             triggerEscapeSequence();
@@ -794,11 +921,19 @@ function applyChoice(opt) {
 function showEscapeIntro() {
     transitionToNext(() => {
         setPhase('phase-3');
-        headerTitle.innerText = '致命错误 // 强制覆写模式已启动';
-        questionText.innerHTML = renderGlitchText('警告：检测到强烈的抵抗意志...正在绕过自主神经系统...');
+        const zh = {
+            header: '致命错误 // 强制覆写模式已启动',
+            q: '警告：检测到强烈的抵抗意志...正在绕过自主神经系统...'
+        };
+        const en = {
+            header: 'FATAL ERROR // Forced Overwrite Mode Activated',
+            q: 'Warning: Strong resistance will detected... Bypassing autonomic nervous system...'
+        };
+        const t = currentLang === 'zh' ? zh : en;
+        headerTitle.innerText = t.header;
+        questionText.innerHTML = renderGlitchText(t.q);
         optionsContainer.innerHTML = '';
 
-        // 自动进入逃生
         setTimeout(() => triggerEscapeSequence(), 3000);
     });
 }
@@ -812,26 +947,30 @@ function triggerEscapeSequence() {
     const needClicks = 8;
     let clicked = 0;
 
-    // 生成4x3的按钮网格
     escapeGrid.innerHTML = '';
     const correctIdx = Math.floor(Math.random() * 12);
+
+    const zhText = currentLang === 'zh';
+    const resistText = zhText ? '破除' : 'BREAK';
+    const complyText = zhText ? '服从' : 'COMPLY';
+
     for (let i = 0; i < 12; i++) {
         const btn = document.createElement('button');
         btn.className = 'escape-btn';
-        btn.innerText = i === correctIdx ? '破除' : '服从';
+        btn.innerText = i === correctIdx ? resistText : complyText;
         btn.onclick = () => {
             if (i === correctIdx) {
                 btn.classList.add('active');
                 clicked++;
                 progress = Math.round((clicked / needClicks) * 100);
-                escapeProgress.innerText = `抵抗进度: ${progress}%`;
+                const zh = currentLang === 'zh';
+                escapeProgress.innerText = zh ? `抵抗进度: ${progress}%` : `Resistance: ${progress}%`;
                 if (clicked >= needClicks) {
                     clearInterval(timer);
                     escapeOverlay.classList.remove('active');
                     showEnding();
                 }
             } else {
-                // 点错扣时间
                 timeLeft = Math.max(0, timeLeft - 1);
             }
         };
@@ -846,7 +985,7 @@ function triggerEscapeSequence() {
         if (timeLeft <= 0) {
             clearInterval(timer);
             escapeOverlay.classList.remove('active');
-            score = Math.min(100, score + 50); // 失败惩罚
+            score = Math.min(100, score + 50);
             showEnding();
         }
     }, 1000);
@@ -863,7 +1002,6 @@ function showEnding() {
     } else if (score < 80) {
         ending = endings.partial;
     } else {
-        // 如果得分高但路径中有大量抵抗标记，可能触发消解结局
         const resistCount = currentPath.filter(x => x === 'resist').length;
         if (resistCount >= 5 && score >= 80) {
             ending = endings.dissolved;
@@ -874,21 +1012,22 @@ function showEnding() {
 
     transitionToNext(() => {
         setPhase(ending.phase || 'phase-3');
-        headerTitle.innerText = '系统提示';
+        const t = currentLang === 'zh';
+        headerTitle.innerText = t ? '系统提示' : 'System Notice';
         questionText.innerHTML = `
             <div class="ending-screen">
-                <div class="ending-title blink">${ending.title}</div>
-                <div class="ending-desc">${ending.desc}</div>
+                <div class="ending-title blink">${t ? ending.title : ending.titleEn}</div>
+                <div class="ending-desc">${t ? ending.desc : ending.descEn}</div>
                 <div class="ending-code">${ending.code}</div>
             </div>
         `;
         optionsContainer.innerHTML = '';
-        resonanceMeter.innerText = `最终共振度: ${score}%`;
+        const zh = currentLang === 'zh';
+        resonanceMeter.innerText = zh ? `最终共振度: ${score}%` : `Final Resonance: ${score}%`;
 
-        // 重玩按钮
         const retry = document.createElement('button');
         retry.className = 'option-btn';
-        retry.innerText = '[ 重新接入系统 ]';
+        retry.innerText = currentLang === 'zh' ? '[ 重新接入系统 ]' : '[ RE-ACCESS SYSTEM ]';
         retry.style.marginTop = '30px';
         retry.onclick = () => {
             currentPath = [];
