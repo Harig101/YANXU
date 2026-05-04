@@ -20,6 +20,22 @@
             color: #333;
         }
 
+        #lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: #888;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        #lang-toggle:hover {
+            color: #333;
+            transform: scale(1.1);
+        }
+
         #app {
             width: 80%;
             max-width: 600px;
@@ -330,7 +346,7 @@
     <div id="app">
         <div id="header-bar">
             <h1 id="header-title">蜂巢议会 - 系统接入声明</h1>
-            <span id="lang-toggle" onclick="toggleLang()">EN/中文</span>
+            <span id="lang-toggle" onclick="toggleLang()">EN</span>
             <div id="resonance-meter">共振度: —</div>
         </div>
         <div id="content-area">
@@ -344,6 +360,7 @@ let currentLang = 'zh';
 
 function toggleLang() {
     currentLang = currentLang === 'zh' ? 'en' : 'zh';
+    document.getElementById('lang-toggle').innerText = currentLang === 'zh' ? 'EN' : '中';
     // Re-render current state
     if (currentQIndex === -1) {
         initIntro();
