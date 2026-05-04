@@ -122,6 +122,12 @@
       margin-bottom: 5px;
     }
 
+    .folder-name-en {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
     .folder-meta {
       font-size: 12px;
       color: #666;
@@ -493,8 +499,6 @@
     .track-selector button:hover {
       background: #444;
     }
-      margin-bottom: 8px;
-    }
   </style>
 </head>
 <body>
@@ -537,24 +541,12 @@
     </div>
   </div>
 
-  <div class="audio-player">
-    <div class="radio-label">深夜电台 FM</div>
-    <div class="audio-controls">
-      <div class="album-art" style="background-image: url('LateNight_FM_Podcast_Cover.png')"></div>
-      <div class="track-selector">
-        <button id="playBtn">▶</button>
-      </div>
-    </div>
-    <audio id="bgAudio" loop>
-      <source src="bgm1.mp3" type="audio/mpeg">
-    </audio>
-  </div>
-
   <script>
     const ARCHIVE_DATA = [
       {
         id: 'folder-1',
         name: '行動綱領',
+        nameEn: 'ACTION PLAN',
         path: 'folder1',
         items: [
           { file: 'Image 1.jpg', displayName: '【黨首動員】LEADER\'S ADDRESS', narrative: '地下党·党首动员讲话\nEDGE LAYER UNDERGROUND PARTY — LEADER\'S ADDRESS\n\n我们不说废话。所以我只讲三件事：我们是谁，他们在做什么，以及我们打算怎么做。\n\n一、他们建了这座塔\nCORE LAYER不是一天建成的。他们花了几代人的时间，把空气、光、水、Elevation——所有东西都标上了价格，然后告诉边缘层的人：这就是自然法则。\n但它不是。\n他们把电梯建在每一层的入口，然后告诉你"高度是特权"。他们把清洁的空气泵入核心层的大厦，然后对边缘层说"空气是商品"。他们控制了楼板、管道、电梯、广播系统，然后指着边缘层的你说：你穷，是因为你不够努力。\n这不是治理。这是系统性劫持。\n\n二、边缘层不只是地理\nEDGE LAYER不是一个地方。是一种状态。\n你住在地下还是住在云端，这不是由你决定的，是由他们决定的。他们决定哪里是核心，哪里是边缘。他们决定谁配呼吸，谁配投票，谁配向上爬。\n而我们的任务，是把这个定义权从他们手里夺回来。\n\n三、我们的纲领很简单\n第一，我们拒绝"高度即特权"这个谎言。\n高度不是特权。高度是资源，而资源应该被平等分配。\n第二，我们坚持空气和呼吸的权利。\n这不是商品。这是生命的基本条件。任何把呼吸变成交易的行为，都是对人性的攻击。\n第三，我们要求政治参与权。\n不是赐予的，是不可剥夺的。核心层的政治腐败和低效一直在忽视我们。\n第四，我们相信行动。\n组织起来，不是为了游说，是为了有能力让他们付出代价。\n\n四、我们不是恐怖分子，我们是现实主义者\n他们会叫我们叛乱者、极端分子、破坏者。他们会没收我们的宣传材料，封禁我们的频道，把我们的名字从电梯权限里删掉。\n这恰恰证明我们触碰到了他们的神经。\n我们不想要混乱。我们想要一个可以呼吸、可以参与、可以站在阳光下的世界。他们给不了，我们就自己拿。\n\n五、这不是结束，这是开始\n隧道尽头不是出口。隧道尽头是起点。\n你每一次参与、每一次行动、每一次把信息传递给身边的人，都是对这个系统的一次侵蚀。\n记住：我们不是因为看到希望才坚持。我们坚持，是为了让希望终于能够找到我们。\n\n从边缘开始。动摇结构。\n\n組織。行動。勝利。\n\n邊緣層地下網絡\nEDGE LAYER UNDERGROUND PARTY\n党首 / LEADER' },
@@ -565,6 +557,7 @@
       {
         id: 'folder-2',
         name: '世界設定補充',
+        nameEn: 'WORLD SETTING SUPPLEMENT',
         path: 'chapter02',
         items: [
           { file: '修正空间对比海报.png', displayName: '【空間對比】SPATIAL CONTRAST', narrative: '【空間對比】\n\n 上層的光照充足，每一棟建築都在人造陽光下閃閃發亮。\n 下層呢？\n 下層只有黴菌、鏽跡，和永遠散不掉的潮濕味。\n\n 但這不是劣勢。\n 這是我們的保護色。\n 他們看不見我們，因為他們根本不想看下層。\n 他們的眼睛適應了光，所以黑暗就是我們的迷彩。\n\n <i>[SPATIAL CONTRAST]\n\n The upper levels have ample lighting, every building sparkling in the sunlight.\n The lower levels?\n Mold, rust, and an eternally lingering dampness.\n\n But this isn\'t a disadvantage.\n This is our camouflage.\n They can\'t see us because they don\'t want to look at the lower levels.\n Their eyes have adapted to light, so darkness is our concealment.</i>' },
@@ -670,6 +663,7 @@
       {
         id: 'folder-7',
         name: '共振程序',
+        nameEn: 'RESONANCE PROGRAM',
         path: 'program',
         external: 'hive_council_branch_1.html',
         items: [
@@ -679,6 +673,7 @@
       {
         id: 'folder-3',
         name: '藍窗',
+        nameEn: 'BLUE WINDOW',
         path: 'chapter03',
         items: [
           { file: '蓝窗角色设定图.png', displayName: '【藍窗】BLUE WINDOW', narrative: '【藍窗】\n\n 代號：藍窗\n 角色：通訊專家\n\n 她的任務是維護地下鐵路的通訊網絡——確保每一條消息都能正確、及時地傳遞。\n\n 她的設備是一套改裝過的信號增強器，能夠在CORE LAYER的干擾下保持通訊暢通。\n 但這不是她最重要的工具。\n 她最重要的工具是她的沉默。\n\n 她很少說話，只用代碼交流。\n 所以當她開口時，每個人都會停下來傾聽。\n\n <i>[BLUE WINDOW]\n Codename: BLUE WINDOW\n Role: Communications Expert\n\n Her mission: maintain the underground railroad\'s communication network — ensuring every message is transmitted correctly and timely.\n\n Her equipment is a set of modified signal boosters, capable of maintaining communication despite CORE LAYER interference.\n But this isn\'t her most important tool.\n Her most important tool is her silence.\n\n She rarely speaks, communicating only in code.\n So when she speaks, everyone stops to listen.</i>',
@@ -1094,6 +1089,7 @@
       {
         id: 'folder-4',
         name: '抵抗組織-宣傳材料',
+        nameEn: 'RESISTANCE MATERIALS',
         path: 'poster',
         items: [
           { file: 'poster/Breath Right.jpg', displayName: '【呼吸權】BREATH RIGHT', narrative: '他們說空氣是交易品。\n他們說高度是通行證。\n他們說你的手只配伸向黑暗。\n我們不信。\nCORE LAYER奪走了陽光，我們就在地下集結。\n「ELEVATION IS PRIVILEGE」？我們把這句話刻在彈匣上，等有一天把槍口對準它的來源。\n這不是請願。\n這不是遊行。\n這是組織——行動——勝利。\n\n<i>They said air is a commodity.\nThey said elevation is a pass.\nThey said your hands are only meant to reach into darkness.\nWe don\'t buy it.\nCORE LAYER stole the sun. So we gather underground.\n"ELEVATION IS PRIVILEGE?" We engrave that line on every magazine — until we can point the barrel at its source.\nThis is not a petition.\nThis is not a march.\nThis is ORGANIZE — ACT — WIN.</i>' },
@@ -1104,6 +1100,7 @@
       {
         id: 'folder-5',
         name: '裝備檔案',
+        nameEn: 'EQUIPMENT ARCHIVE',
         path: 'weapons',
         items: [
           { file: '简化文字标识概念图.png', displayName: '【淨化者】PURIFIER', narrative: '【淨化者】\n\n外觀是一根大型圓筒，口直徑約二十厘米，可安裝在移動平台上，也可由單兵攜帶。\n\n發射的是高濃度液態催化霧配方——不是戰爭時期的舊配方，是改良版，保留了令人失能的能力，但不再導致死亡（議會需要勞動力，不需要屍體）。\n\n吸入者在十分鐘內失去運動能力，意識模糊，光合菌進入抑制狀態。\n\n<i>[PURIFIER]\nA large cylindrical tube, approximately 20cm in diameter. Can be mounted on mobile platforms or carried by a single soldier.\n\nFires high-concentration liquid catalyst mist formula — not the old wartime formula, but an improved version that retains incapacitating ability but no longer causes death (the Council needs labor, not corpses).\n\nInhalers lose motor ability within 10 minutes, consciousness becomes blurred, photosynthetic bacteria enter suppressed state.</i>' },
@@ -1114,6 +1111,7 @@
       {
         id: 'folder-6',
         name: 'карта',
+        nameEn: 'MAP',
         path: 'map',
         hidden: true,
         items: [
@@ -1133,49 +1131,6 @@
     let currentSection = 0;
     let currentLang = 'zh';
     let hiddenFolderUnlocked = false;
-
-    // Audio player controls
-    const bgAudio = document.getElementById('bgAudio');
-    const playBtn = document.getElementById('playBtn');
-
-    function togglePlay() {
-      if (bgAudio.paused) {
-        bgAudio.play();
-        playBtn.textContent = '⏸';
-      } else {
-        bgAudio.pause();
-        playBtn.textContent = '▶';
-      }
-    }
-
-    playBtn.addEventListener('click', togglePlay);
-    bgAudio.volume = 0.5;
-
-    // Drag functionality
-    const audioPlayer = document.querySelector('.audio-player');
-    let isDragging = false;
-    let dragOffsetX, dragOffsetY;
-
-    audioPlayer.addEventListener('mousedown', (e) => {
-      if (e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON') return;
-      isDragging = true;
-      dragOffsetX = e.clientX - audioPlayer.getBoundingClientRect().left;
-      dragOffsetY = e.clientY - audioPlayer.getBoundingClientRect().top;
-      audioPlayer.style.cursor = 'grabbing';
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      audioPlayer.style.right = 'auto';
-      audioPlayer.style.bottom = 'auto';
-      audioPlayer.style.left = (e.clientX - dragOffsetX) + 'px';
-      audioPlayer.style.top = (e.clientY - dragOffsetY) + 'px';
-    });
-
-    document.addEventListener('mouseup', () => {
-      isDragging = false;
-      audioPlayer.style.cursor = 'move';
-    });
 
     function unlockHiddenFolder() {
       hiddenFolderUnlocked = true;
@@ -1228,6 +1183,7 @@
         <div class="folder-card ${folder.hidden ? 'hidden-folder' : ''}" onclick="openFolder('${folder.id}')">
           <div class="folder-icon">${folder.id === 'folder-6' && hiddenFolderUnlocked ? '🗺️' : (folder.hidden && hiddenFolderUnlocked ? '🔓' : '📁')}</div>
           <div class="folder-name">${folder.name}</div>
+          <div class="folder-name-en">${folder.nameEn || ''}</div>
           <div class="folder-meta">${folder.items.length} IMAGES</div>
         </div>
       `).join('');
