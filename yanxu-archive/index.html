@@ -123,8 +123,8 @@
     }
 
     .folder-name-en {
-      font-size: 12px;
-      color: #666;
+      font-size: 14px;
+      color: #fff;
       margin-bottom: 5px;
     }
 
@@ -250,7 +250,7 @@
     }
 
     .viewer-narrative i {
-      color: #888;
+      color: #fff;
       font-style: italic;
     }
 
@@ -1113,7 +1113,6 @@
         name: 'карта',
         nameEn: 'MAP',
         path: 'map',
-        hidden: true,
         items: [
           { file: 'map/第一层核心穹顶区.png', displayName: '【第一層】CORE LAYER穹頂區', narrative: '核心層的天空是人造的。\n十二個人造太陽永遠停留在鈉黃昏的光譜裡，模拟著一種從未存在過的「自然」。\n這裡的空氣是免費的，呼吸是居民的權利而非特權。\n但這一切免費，都是建立在邊緣層的呼吸牌稅之上的。\n\n<i>[CORE LAYER]\nThe sky here is artificial.\nTwelve artificial suns permanently stay in the sodium-dusk spectrum, simulating a "nature" that never existed.\nAir here is free — breathing is a resident\'s right, not a privilege.\nBut all this freeness is built on the breath-token taxes of the Edge Layer.</i>' },
           { file: 'map/第二层居住分配区.png', displayName: '【第二層】分配區ALLOCATED ZONE', narrative: '分配區是中層的肺。\n每一天，淨化後的空氣從這裡被泵送到上層；每一週，底層的呼吸牌稅從這裡被結算。\n這裡的人習慣排隊，習慣配額，習慣把自己的肺部標價。\n他們不是奴隸，他們只是忘記了自己有權利呼吸。\n\n<i>[ALLOCATED ZONE]\nThe Allocated Zone is the middle tier\'s lungs.\nEvery day, purified air is pumped from here to the upper levels; every week, breath-token taxes from the lower levels are settled here.\nPeople here are used to queuing, used to quotas, used to pricing their own lungs.\nThey are not slaves — they just forgot they have the right to breathe.</i>' },
@@ -1259,8 +1258,8 @@
       document.getElementById('viewerImg').src = `assets/${item.file}`;
       document.getElementById('viewerTitle').textContent = item.displayName || item.file;
       let narrativeHtml = item.narrative.replace(/\n/g, '<br>');
-      if (item.unlockKey && !hiddenFolderUnlocked) {
-        narrativeHtml += `<div class="unlock-section" onclick="unlockHiddenFolder()"><span class="unlock-text">「自由之路，藏於地下」</span><br><span class="unlock-subtext">[ 解鎖隱藏文件 ]</span></div>`;
+      if (item.unlockKey) {
+        narrativeHtml += `<div class="unlock-section" onclick="openFolder('folder-6')"><span class="unlock-text">「自由之路，藏於地下」</span><br><span class="unlock-subtext">THE PATH TO FREEDOM LIES UNDERGROUND</span></div>`;
       }
       document.getElementById('viewerText').innerHTML = narrativeHtml;
     }
